@@ -38,12 +38,12 @@
   padding: 0;
 }
 .sidebar-avatar--active {
-  background: --mod-selected-bg;
+  background: var(--mod-selected-bg);
   box-shadow: 0 0 0 5px --mod-selected-bg;
   border-radius: 3px;
 }
 .room-selector--selected {
-  background: --mod-selected-bg;
+  background: var(--mod-selected-bg);
   .text {
     color: #000;
   }
@@ -120,10 +120,10 @@
 .sidebar-avatar .notification-badge,
 .notification-badge {
   &.important {
-    background-color: --mod-notification-dot;
+    background-color: var(--mod-notification-dot);
   }
   background-color: transparent;
-  box-shadow: 0 0 0 2px --mod-activity-ring;
+  box-shadow: 0 0 0 2px var(--mod-activity-ring);
   transform: scale(1.2);
   .sidebar-avatar--active & {
     visibility: hidden;
