@@ -131,18 +131,24 @@ function RoomViewInput({
       textAreaRef.current.setSelectionRange(pos, pos);
     }, 0);
   }
-  function replaceCmdWith(msg, cursor, replacement) {
+  function replaceCmdWith(msg, cursor, replacement, leadingReplacement) {
     if (msg === null) return null;
     const targetInput = msg.slice(0, cursor);
     const cmdParts = targetInput.match(CMD_REGEX);
     const leadingInput = msg.slice(0, cmdParts.index);
+    if (leadingReplacement && leadingInput == "") {
+      replacement = leadingReplacement;
+    }
     if (replacement.length > 0) setCursorPosition(leadingInput.length + replacement.length);
     return leadingInput + replacement + msg.slice(cursor);
   }
   function firedCmd(cmdData) {
     const msg = textAreaRef.current.value;
     textAreaRef.current.value = replaceCmdWith(
-      msg, cmdCursorPos, typeof cmdData?.replace !== 'undefined' ? cmdData.replace : '',
+      msg,
+      cmdCursorPos,
+      typeof cmdData?.replace !== 'undefined' ? cmdData.replace : '',
+      typeof cmdData?.leadingReplacement !== 'undefined' ? cmdData.leadingReplacement : '',
     );
     deactivateCmd();
   }
