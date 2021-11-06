@@ -117,15 +117,17 @@
   padding-top:    6px;
   padding-bottom: 6px;
 }
-.sidebar-avatar .notification-badge,
-.notification-badge {
-  &.important {
-    background-color: var(--mod-notification-dot);
-  }
-  background-color: transparent;
-  box-shadow: 0 0 0 2px var(--mod-activity-ring);
-  transform: scale(1.2);
-  .sidebar-avatar--active & {
-    visibility: hidden;
+#root {
+  .sidebar-avatar .notification-badge,
+  .notification-badge {
+    &.important {
+      background-color: var(--mod-notification-dot);
+    }
+    background-color: transparent;
+    box-shadow: 0 0 0 2px var(--mod-activity-ring);
+    transform: scale(1.2);
+    .sidebar-avatar--active & {
+      visibility: hidden;
+    }
   }
 }
