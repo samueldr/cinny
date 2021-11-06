@@ -75,7 +75,7 @@
   min-width: $collapsed;
 
   &:not(:hover) {
-    .room-selector .text,
+    .room-selector > .text,
     .room-selector__options {
       display: none;
     }
@@ -88,6 +88,13 @@
     min-width: $expanded;
   }
   /* */
+
+  .rooms-container .avatar-container {
+    img, .avatar__border {
+      width: var(--av-extra-small);
+      height: var(--av-extra-small);
+    }
+  }
 }
 .message__content, .message__edit, .message__reactions, .message__reply {
   max-width: initial;
