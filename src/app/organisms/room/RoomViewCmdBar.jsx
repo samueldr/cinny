@@ -76,6 +76,7 @@ function CmdHelp() {
           <MenuHeader>Autofill commands</MenuHeader>
           <Text variant="b2">:emoji_name</Text>
           <Text variant="b2">@name</Text>
+          <Text variant="b2">#room</Text>
         </>
       )}
       render={(toggleMenu) => (
@@ -179,6 +180,7 @@ function getCmdActivationMessage(prefix) {
     '>@': () => genMessage('Go-to command mode activated. ', 'Type people name for suggestions.'),
     ':': () => genMessage('Emoji autofill command mode activated. ', 'Type emoji shortcut for suggestions.'),
     '@': () => genMessage('Name autofill command mode activated. ', 'Type name for suggestions.'),
+    '#': () => genMessage('Room completion command mode activated. ', 'Type room for suggestions.'),
   };
   return cmd[prefix]?.();
 }
@@ -278,6 +280,7 @@ function getCmdSuggestions({ prefix, option, suggestions }, fireCmd) {
     '>@': (peoples) => getRoomsSuggestion(prefix, peoples),
     ':': (emos) => getEmojiSuggestion(prefix, emos),
     '@': (members) => getNameSuggestion(prefix, members),
+    '#': (rooms) => getRoomsSuggestion(prefix, rooms),
   };
   return cmd[prefix]?.(suggestions);
 }
@@ -335,6 +338,7 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
         const room = matrixClient.getRoom(rId);
         return {
           name: room.name,
+          alias: room.getCanonicalAlias(),
           roomId: room.roomId,
         };
       });
@@ -349,6 +353,7 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
         name: member.name,
         userId: member.userId.slice(1),
       })), { keys: ['name', 'userId'], limit: 20 }),
+      '#': () => asyncSearch.setup(getRooms([...roomList.rooms]), { keys: ['name'], limit: 20 }),
     };
     setupSearch[prefix]?.();
   }
@@ -375,6 +380,11 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
     if (myCmd.prefix === '@') {
       viewEvent.emit('cmd_fired', {
         replace: myCmd.result.name,
+      });
+    }
+    if (myCmd.prefix === '#') {
+      viewEvent.emit('cmd_fired', {
+        replace: myCmd.result.alias,
       });
     }
     deactivateCmd();
