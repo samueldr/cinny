@@ -25,8 +25,8 @@ function Selector({
   const mx = initMatrix.matrixClient;
   const noti = initMatrix.notifications;
   const room = mx.getRoom(roomId);
-  let imageSrc = room.getAvatarFallbackMember()?.getAvatarUrl(mx.baseUrl, 24, 24, 'crop') || null;
-  if (imageSrc === null) imageSrc = room.getAvatarUrl(mx.baseUrl, 24, 24, 'crop') || null;
+  let imageSrc = room.getAvatarUrl(mx.baseUrl, 24, 24, 'crop');
+  imageSrc = isDM ? room.getAvatarFallbackMember()?.getAvatarUrl(mx.baseUrl, 24, 24, 'crop') : imageSrc;
 
   const [isSelected, setIsSelected] = useState(navigation.selectedRoomId === roomId);
   const [, forceUpdate] = useState({});
@@ -81,7 +81,7 @@ function Selector({
       key={roomId}
       name={room.name}
       roomId={roomId}
-      imageSrc={isDM ? imageSrc : null}
+      imageSrc={imageSrc}
       // eslint-disable-next-line no-nested-ternary
       iconSrc={isDM ? null : room.getJoinRule() === 'invite' ? HashLockIC : HashIC}
       isSelected={isSelected}

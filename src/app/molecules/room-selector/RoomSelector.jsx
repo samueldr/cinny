@@ -54,7 +54,6 @@ function RoomSelector({
             text={name.slice(0, 1)}
             bgColor={colorMXID(roomId)}
             imageSrc={imageSrc}
-            iconSrc={iconSrc}
             size="extra-small"
           />
           <Text variant="b1">{name}</Text>
