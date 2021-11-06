@@ -25,6 +25,7 @@ class Settings extends EventEmitter {
 
     this.isMarkdown = this.getIsMarkdown();
     this.isPeopleDrawer = this.getIsPeopleDrawer();
+    this.isTypingNotificationsInStatusbar = this.getIsTypingNotificationsInStatusbar();
 
     this.isTouchScreenDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
   }
@@ -72,6 +73,15 @@ class Settings extends EventEmitter {
     return settings.isPeopleDrawer;
   }
 
+  getIsTypingNotificationsInStatusbar() {
+    if (typeof this.isTypingNotificationsInStatusbar === 'boolean') return this.isTypingNotificationsInStatusbar;
+
+    const settings = getSettings();
+    if (settings === null) return false;
+    if (typeof settings.isTypingNotificationsInStatusbar === 'undefined') return false;
+    return settings.isTypingNotificationsInStatusbar;
+  }
+
   setter(action) {
     const actions = {
       [cons.actions.settings.TOGGLE_MARKDOWN]: () => {
@@ -83,6 +93,11 @@ class Settings extends EventEmitter {
         this.isPeopleDrawer = !this.isPeopleDrawer;
         setSettings('isPeopleDrawer', this.isPeopleDrawer);
         this.emit(cons.events.settings.PEOPLE_DRAWER_TOGGLED, this.isPeopleDrawer);
+      },
+      [cons.actions.settings.TOGGLE_TYPING_NOTIFICATION_IN_STATUSBAR]: () => {
+        this.isTypingNotificationsInStatusbar = !this.isTypingNotificationsInStatusbar;
+        setSettings('isTypingNotificationsInStatusbar', this.isTypingNotificationsInStatusbar);
+        this.emit(cons.events.settings.TYPING_NOTIFICATION_IN_STATUSBAR_TOGGLED, this.isTypingNotificationsInStatusbar);
       },
     };
 

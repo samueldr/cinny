@@ -7,6 +7,7 @@ import parse from 'html-react-parser';
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
 import CINNY_COMMANDS from '../../../client/commands';
+import settings from '../../../client/state/settings';
 import {
   selectTab,
   selectRoom,
@@ -22,6 +23,7 @@ import ContextMenu, { MenuHeader } from '../../atoms/context-menu/ContextMenu';
 import ScrollView from '../../atoms/scroll/ScrollView';
 import SettingTile from '../../molecules/setting-tile/SettingTile';
 import TimelineChange from '../../molecules/message/TimelineChange';
+import TypingNotification from './TypingNotification';
 
 import CmdIC from '../../../../public/res/ic/outlined/cmd.svg';
 
@@ -228,6 +230,7 @@ let cmdPrefix;
 let cmdOption;
 function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
   const [cmd, setCmd] = useState(null);
+  const [isTypingNotificationsInStatusbar, setIsTypingNotificationsInStatusbar] = useState(settings.isTypingNotificationsInStatusbar);
 
   function displaySuggestions(suggestions) {
     if (suggestions.length === 0) {
@@ -413,6 +416,13 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
     };
   }, [cmd]);
 
+  useEffect(() => {
+    settings.on(cons.events.settings.TYPING_NOTIFICATION_IN_STATUSBAR_TOGGLED, setIsTypingNotificationsInStatusbar);
+    return () => {
+      settings.removeListener(cons.events.settings.TYPING_NOTIFICATION_IN_STATUSBAR_TOGGLED, setIsTypingNotificationsInStatusbar);
+    };
+  }, []);
+
   if (typeof cmd?.error === 'string') {
     return (
       <div className="cmd-bar">
@@ -437,6 +447,9 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
         {inSuggestionMode && hasSuggestions && <Text variant="b3">TAB</Text>}
       </div>
       <div className="cmd-bar__content">
+        {!inSuggestionMode && settings.isTypingNotificationsInStatusbar &&
+          <TypingNotification roomId={roomId} roomTimeline={roomTimeline} />
+        }
         {!inSuggestionMode && (
           <FollowingMembers
             roomId={roomId}

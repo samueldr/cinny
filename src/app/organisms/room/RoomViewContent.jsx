@@ -7,6 +7,7 @@ import dateFormat from 'dateformat';
 
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
+import settings from '../../../client/state/settings';
 import { redactEvent, sendReaction } from '../../../client/action/roomTimeline';
 import { getUsername, getUsernameOfRoomMember } from '../../../util/matrixUtil';
 import colorMXID from '../../../util/colorMXID';
@@ -196,6 +197,7 @@ function RoomViewContent({
   const [isReachedTimelineEnd, setIsReachedTimelineEnd] = useState(false);
   const [onStateUpdate, updateState] = useState(null);
   const [editEvent, setEditEvent] = useState(null);
+  const [isTypingNotificationsInStatusbar, setIsTypingNotificationsInStatusbar] = useState(settings.isTypingNotificationsInStatusbar);
   const mx = initMatrix.matrixClient;
   const noti = initMatrix.notifications;
   if (scroll.limit === 0) {
@@ -321,6 +323,13 @@ function RoomViewContent({
       autoLoadTimeline();
     }
   }, [onStateUpdate]);
+
+  useEffect(() => {
+    settings.on(cons.events.settings.TYPING_NOTIFICATION_IN_STATUSBAR_TOGGLED, setIsTypingNotificationsInStatusbar);
+    return () => {
+      settings.removeListener(cons.events.settings.TYPING_NOTIFICATION_IN_STATUSBAR_TOGGLED, setIsTypingNotificationsInStatusbar);
+    };
+  }, [isTypingNotificationsInStatusbar]);
 
   let prevMEvent = null;
   function genMessage(mEvent) {
@@ -645,7 +654,7 @@ function RoomViewContent({
   };
 
   return (
-    <div className="room-view__content">
+    <div className={`room-view__content ${settings.isTypingNotificationsInStatusbar || "with-typing-notification"}`}>
       <div className="timeline__wrapper">
         { renderTimeline() }
       </div>

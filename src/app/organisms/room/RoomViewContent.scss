@@ -5,9 +5,16 @@
   justify-content: flex-end;
 
   & .timeline__wrapper {
-    --typing-noti-height: 28px;
     min-height: 0;
     min-width: 0;
-    padding-bottom: var(--typing-noti-height);
+  }
+  & .timeline__wrapper {
+    padding-bottom: 6px;
+  }
+  &.with-typing-notification {
+    & .timeline__wrapper {
+      --typing-noti-height: 28px;
+      padding-bottom: var(--typing-noti-height);
+    }
   }
 }

@@ -5,9 +5,11 @@ import './RoomViewFloating.scss';
 
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
+import settings from '../../../client/state/settings';
 
 import Text from '../../atoms/text/Text';
 import IconButton from '../../atoms/button/IconButton';
+import TypingNotification from './TypingNotification';
 
 import ChevronBottomIC from '../../../../public/res/ic/outlined/chevron-bottom.svg';
 
@@ -17,7 +19,7 @@ function RoomViewFloating({
   roomId, roomTimeline, viewEvent,
 }) {
   const [reachedBottom, setReachedBottom] = useState(true);
-  const [typingMembers, setTypingMembers] = useState(new Set());
+  const [isTypingNotificationsInStatusbar, setIsTypingNotificationsInStatusbar] = useState(settings.isTypingNotificationsInStatusbar);
   const mx = initMatrix.matrixClient;
 
   function isSomeoneTyping(members) {
@@ -42,24 +44,22 @@ function RoomViewFloating({
 
   useEffect(() => {
     setReachedBottom(true);
-    setTypingMembers(new Set());
     viewEvent.on('timeline-scroll', handleTimelineScroll);
     return () => viewEvent.removeListener('timeline-scroll', handleTimelineScroll);
   }, [roomId]);
 
   useEffect(() => {
-    roomTimeline.on(cons.events.roomTimeline.TYPING_MEMBERS_UPDATED, updateTyping);
+    settings.on(cons.events.settings.TYPING_NOTIFICATION_IN_STATUSBAR_TOGGLED, setIsTypingNotificationsInStatusbar);
     return () => {
-      roomTimeline?.removeListener(cons.events.roomTimeline.TYPING_MEMBERS_UPDATED, updateTyping);
+      settings.removeListener(cons.events.settings.TYPING_NOTIFICATION_IN_STATUSBAR_TOGGLED, setIsTypingNotificationsInStatusbar);
     };
-  }, [roomTimeline]);
+  }, []);
 
   return (
     <>
-      <div className={`room-view__typing${isSomeoneTyping(typingMembers) ? ' room-view__typing--open' : ''}`}>
-        <div className="bouncing-loader"><div /></div>
-        <Text variant="b2">{getTypingMessage(typingMembers)}</Text>
-      </div>
+      { settings.isTypingNotificationsInStatusbar ||
+        <TypingNotification roomId={roomId} roomTimeline={roomTimeline} />
+      }
       <div className={`room-view__STB${reachedBottom ? '' : ' room-view__STB--open'}`}>
         <IconButton
           onClick={() => {

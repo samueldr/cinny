@@ -5,7 +5,10 @@ import './Settings.scss';
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
 import settings from '../../../client/state/settings';
-import { toggleMarkdown } from '../../../client/action/settings';
+import {
+  toggleMarkdown,
+  toggleTypingNotificationsInStatusbar,
+} from '../../../client/action/settings';
 
 import Text from '../../atoms/text/Text';
 import IconButton from '../../atoms/button/IconButton';
@@ -69,6 +72,16 @@ function AppearanceSection() {
           />
         )}
         content={<Text variant="b3">Format messages with markdown syntax before sending.</Text>}
+      />
+      <SettingTile
+        title="Typing notifications in status bar"
+        options={(
+          <Toggle
+            isActive={settings.isTypingNotificationsInStatusbar}
+            onToggle={(isTypingNotificationsInStatusbar) => { toggleTypingNotificationsInStatusbar(isTypingNotificationsInStatusbar); updateState({}); }}
+          />
+        )}
+        content={<Text variant="b3">Show typing notifications in status bar.</Text>}
       />
     </div>
   );

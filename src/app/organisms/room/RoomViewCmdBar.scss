@@ -104,6 +104,10 @@
       }
     }
   }
+  & .timeline-change,
+  & .typing-notification {
+    min-width: 0;
+  }
 }
 
 .cmd-item {

@@ -13,7 +13,14 @@ function togglePeopleDrawer() {
   });
 }
 
+function toggleTypingNotificationsInStatusbar() {
+  appDispatcher.dispatch({
+    type: cons.actions.settings.TOGGLE_TYPING_NOTIFICATION_IN_STATUSBAR,
+  });
+}
+
 export {
   toggleMarkdown,
   togglePeopleDrawer,
+  toggleTypingNotificationsInStatusbar,
 };
