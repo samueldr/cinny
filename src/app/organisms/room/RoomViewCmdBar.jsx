@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './RoomViewCmdBar.scss';
 import parse from 'html-react-parser';
-import twemoji from 'twemoji';
 
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
@@ -242,15 +241,7 @@ function getCmdSuggestions({ prefix, option, suggestions }, fireCmd) {
         })}
       >
         {
-          parse(twemoji.parse(
-            emoji.unicode,
-            {
-              attributes: () => ({
-                unicode: emoji.unicode,
-                shortcodes: emoji.shortcodes?.toString(),
-              }),
-            },
-          ))
+            emoji.unicode
         }
         <Text variant="b2">{`:${emoji.shortcode}:`}</Text>
       </CmdItem>

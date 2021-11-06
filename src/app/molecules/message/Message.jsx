@@ -8,7 +8,6 @@ import gfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import parse from 'html-react-parser';
-import twemoji from 'twemoji';
 import { getUsername } from '../../../util/matrixUtil';
 
 import Text from '../../atoms/text/Text';
@@ -186,7 +185,7 @@ function genReactionMsg(userIds, reaction) {
     <>
       {msg}
       {genLessContText(' reacted with')}
-      {parse(twemoji.parse(reaction))}
+      {reaction}
     </>
   );
 }
@@ -204,7 +203,7 @@ function MessageReaction({
         type="button"
         className={`msg__reaction${isActive ? ' msg__reaction--active' : ''}`}
       >
-        { parse(twemoji.parse(reaction)) }
+        { reaction }
         <Text variant="b3" className="msg__reaction-count">{users.length}</Text>
       </button>
     </Tooltip>

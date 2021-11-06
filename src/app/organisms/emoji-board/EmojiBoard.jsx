@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import './EmojiBoard.scss';
 
 import parse from 'html-react-parser';
-import twemoji from 'twemoji';
 import { emojiGroups, emojis } from './emoji';
 import AsyncSearch from '../../../util/AsyncSearch';
 
@@ -38,18 +37,15 @@ function EmojiGroup({ name, groupEmojis }) {
         if (emojiIndex >= totalEmojis) break;
         const emoji = groupEmojis[emojiIndex];
         emojiRow.push(
-          <span key={emojiIndex}>
+          <span
+            className="emoji"
+            key={emojiIndex}
+            unicode={emoji.unicode}
+            shortcodes={emoji.shortcodes?.toString()}
+            hexcode={emoji.hexcode}
+          >
             {
-              parse(twemoji.parse(
-                emoji.unicode,
-                {
-                  attributes: () => ({
-                    unicode: emoji.unicode,
-                    shortcodes: emoji.shortcodes?.toString(),
-                    hexcode: emoji.hexcode,
-                  }),
-                },
-              ))
+                emoji.unicode
             }
           </span>,
         );
@@ -188,7 +184,7 @@ function EmojiBoard({ onSelect }) {
           </ScrollView>
         </div>
         <div ref={emojiInfo} className="emoji-board__content__info">
-          <div>{ parse(twemoji.parse('🙂')) }</div>
+          <div>🙂</div>
           <Text>:slight_smile:</Text>
         </div>
       </div>
