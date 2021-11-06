@@ -106,10 +106,11 @@ MessageReply.propTypes = {
   content: PropTypes.string.isRequired,
 };
 
-function MessageContent({ content, isMarkdown, isEdited }) {
+function MessageContent({ content, isMarkdown, isEdited, msgType }) {
   return (
     <div className="message__content">
       <div className="text text-b1">
+        { msgType === "m.emote" && '* ' }
         { isMarkdown ? genMarkdown(content) : linkifyContent(content) }
       </div>
       { isEdited && <Text className="message__content-edited" variant="b3">(edited)</Text>}
@@ -124,6 +125,7 @@ MessageContent.propTypes = {
   content: PropTypes.node.isRequired,
   isMarkdown: PropTypes.bool,
   isEdited: PropTypes.bool,
+  msgType: PropTypes.string,
 };
 
 function MessageEdit({ content, onSave, onCancel }) {
@@ -228,10 +230,11 @@ MessageOptions.propTypes = {
 
 function Message({
   avatar, header, reply, content, editContent, reactions, options,
+  msgType,
 }) {
   const msgClass = header === null ? ' message--content-only' : ' message--full';
   return (
-    <div className={`message${msgClass}`}>
+    <div className={`message${msgClass} message--type-${msgType.replace(".", "-")}`}>
       <div className="message__avatar-container">
         {avatar !== null && avatar}
       </div>
@@ -254,6 +257,7 @@ Message.defaultProps = {
   editContent: null,
   reactions: null,
   options: null,
+  msgType: "m.text",
 };
 Message.propTypes = {
   avatar: PropTypes.node,
@@ -263,6 +267,7 @@ Message.propTypes = {
   editContent: PropTypes.node,
   reactions: PropTypes.node,
   options: PropTypes.node,
+  msgType: PropTypes.string,
 };
 
 const MessageRedacted = ({ avatar, header, options }) =>

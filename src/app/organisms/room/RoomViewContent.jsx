@@ -312,6 +312,7 @@ function RoomViewContent({
 
     let content = mEvent.getContent().body;
     if (typeof content === 'undefined') return null;
+    const msgType = mEvent.getContent()?.msgtype;
     let reply = null;
     let reactions = null;
     let isMarkdown = mEvent.getContent().format === 'org.matrix.custom.html';
@@ -392,6 +393,7 @@ function RoomViewContent({
       <MessageContent
         isMarkdown={isMarkdown}
         content={isMedia(mEvent) ? genMediaContent(mEvent) : content}
+        msgType={msgType}
         isEdited={isEdited}
       />
     );
@@ -507,6 +509,7 @@ function RoomViewContent({
         header={userHeader}
         reply={userReply}
         content={editEvent !== null && isEditingEvent ? null : userContent}
+        msgType={msgType}
         editContent={editEvent !== null && isEditingEvent ? (
           <MessageEdit
             content={content}

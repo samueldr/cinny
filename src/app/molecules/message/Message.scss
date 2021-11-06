@@ -415,3 +415,9 @@
   opacity: 0.6;
   font-style: italic;
 }
+
+.message.message--type-m-emote {
+  .message__content {
+    font-style: italic;
+  }
+}
