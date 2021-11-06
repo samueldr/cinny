@@ -26,6 +26,7 @@ import {
   MessageReactionGroup,
   MessageReaction,
   MessageOptions,
+  MessageRedacted,
   PlaceholderMessage,
 } from '../../molecules/message/Message';
 import * as Media from '../../molecules/media/Media';
@@ -333,6 +334,35 @@ function RoomViewContent({
       && prevMEvent.getSender() === mEvent.getSender()
     );
 
+    const senderMXIDColor = colorMXID(mEvent.sender.userId);
+    const userAvatar = isContentOnly ? null : (
+      <button type="button" onClick={() => openProfileViewer(mEvent.sender.userId, roomId)}>
+        <Avatar
+          imageSrc={mEvent.sender.getAvatarUrl(initMatrix.matrixClient.baseUrl, 36, 36, 'crop')}
+          text={getUsernameOfRoomMember(mEvent.sender)}
+          bgColor={senderMXIDColor}
+          size="small"
+        />
+      </button>
+    );
+    const userHeader = isContentOnly ? null : (
+      <MessageHeader
+        userId={mEvent.sender.userId}
+        name={getUsernameOfRoomMember(mEvent.sender)}
+        color={senderMXIDColor}
+        time={`${dateFormat(mEvent.getDate(), 'hh:MM TT')}`}
+      />
+    );
+
+    // Use a Redacted message type if it's a removed message.
+    if (mEvent.isRedacted()) {
+      return <MessageRedacted
+        avatar={userAvatar}
+        header={userHeader}
+        key={`box-${mEvent.getId()}`}
+      />;
+    }
+
     let content = mEvent.getContent().body;
     if (typeof content === 'undefined') return null;
     const msgType = mEvent.getContent()?.msgtype;
@@ -405,25 +435,6 @@ function RoomViewContent({
       });
     }
 
-    const senderMXIDColor = colorMXID(mEvent.sender.userId);
-    const userAvatar = isContentOnly ? null : (
-      <button type="button" onClick={() => openProfileViewer(mEvent.sender.userId, roomId)}>
-        <Avatar
-          imageSrc={mEvent.sender.getAvatarUrl(initMatrix.matrixClient.baseUrl, 36, 36, 'crop')}
-          text={getUsernameOfRoomMember(mEvent.sender)}
-          bgColor={senderMXIDColor}
-          size="small"
-        />
-      </button>
-    );
-    const userHeader = isContentOnly ? null : (
-      <MessageHeader
-        userId={mEvent.sender.userId}
-        name={getUsernameOfRoomMember(mEvent.sender)}
-        color={senderMXIDColor}
-        time={`${dateFormat(mEvent.getDate(), 'hh:MM TT')}`}
-      />
-    );
     const userReply = reply === null ? null : (
       <MessageReply
         name={reply.to}
@@ -575,7 +586,6 @@ function RoomViewContent({
   function renderMessage(mEvent) {
     if (!cons.supportEventTypes.includes(mEvent.getType())) return false;
     if (mEvent.getRelation()?.rel_type === 'm.replace') return false;
-    if (mEvent.isRedacted()) return false;
 
     if (mEvent.getType() === 'm.room.create') return genRoomIntro(mEvent, roomTimeline);
 

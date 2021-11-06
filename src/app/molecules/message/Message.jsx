@@ -293,6 +293,24 @@ Message.propTypes = {
   msgType: PropTypes.string,
 };
 
+const MessageRedacted = ({ avatar, header, options }) =>
+  <div className={`message message-redacted`}>
+    <div className="message__avatar-container">
+      {avatar !== null && avatar}
+    </div>
+    <div className="message__main-container">
+      {header !== null && header}
+      <div className="message__content">
+        <div className="">
+          <p>
+            Message deleted
+          </p>
+        </div>
+      </div>
+      {options !== null && options}
+    </div>
+  </div>
+
 export {
   Message,
   MessageHeader,
@@ -302,5 +320,6 @@ export {
   MessageReactionGroup,
   MessageReaction,
   MessageOptions,
+  MessageRedacted,
   PlaceholderMessage,
 };
