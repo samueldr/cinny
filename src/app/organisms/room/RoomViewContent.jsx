@@ -145,7 +145,7 @@ function genRoomIntro(mEvent, roomTimeline) {
       name={roomTimeline.room.name}
       heading={`Welcome to ${roomTimeline.room.name}`}
       desc={`This is the beginning of ${roomTimeline.room.name} room.${typeof roomTopic !== 'undefined' ? (` Topic: ${roomTopic}`) : ''}`}
-      time={mEvent ? `Created at ${dateFormat(mEvent.getDate(), 'dd mmmm yyyy, hh:MM TT')}` : null}
+      time={mEvent ? `Created at ${dateFormat(mEvent.getDate(), 'dd mmmm yyyy, HH:MM')}` : null}
     />
   );
 }
@@ -350,7 +350,7 @@ function RoomViewContent({
         userId={mEvent.sender.userId}
         name={getUsernameOfRoomMember(mEvent.sender)}
         color={senderMXIDColor}
-        time={`${dateFormat(mEvent.getDate(), 'hh:MM TT')}`}
+        time={`${dateFormat(mEvent.getDate(), 'HH:MM')}`}
       />
     );
 
@@ -615,7 +615,7 @@ function RoomViewContent({
           key={mEvent.getId()}
           variant={timelineChange.variant}
           content={timelineChange.content}
-          time={`${dateFormat(mEvent.getDate(), 'hh:MM TT')}`}
+          time={`${dateFormat(mEvent.getDate(), 'HH:MM')}`}
         />
       </React.Fragment>
     );
