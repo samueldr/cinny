@@ -18,6 +18,13 @@
   --mod-notification-dot: #73ff70;
 }
 
+// UGH...
+// I can't make this `mod.scss` apply after *all* scss files.
+// This is because other scss files are `import`ed as needed in jsx files.
+// And this sucks as ordering would be the actual way to make this work.
+// Instead we'll make the rules have more weight with that one ID.
+#root {
+
 .message + .timeline-change,
 .message--content-only + .message--full,
 .message--full + .message--full,
@@ -67,25 +74,44 @@
   padding-bottom: 0;
   padding-top: 0;
 }
+
+.navigation__wrapper:not(:hover) {
+  .header {
+    width: 0;
+    overflow: hidden;
+  }
+
+  .room-selector__content > .text,
+  .room-selector__options {
+    display: none;
+  }
+
+  .room-selector {
+    position: relative;
+    .notification-badge {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: calc(var(--av-extra-small) - 6px);
+    }
+  }
+}
+
 .navigation__wrapper {
   $expanded: 240px;
-  $collapsed: 120px;
+  $collapsed: 110px;
   width: auto;
   max-width: $collapsed;
   min-width: $collapsed;
 
-  &:not(:hover) {
-    .room-selector > .text,
-    .room-selector__options {
-      display: none;
-    }
-  }
   // /*
   &:focus,
   &:hover {
     width: auto;
     max-width: $expanded;
     min-width: $expanded;
+    margin-right: -1 * ( $expanded - $collapsed );
+    z-index: 10;
   }
   /* */
 
@@ -117,17 +143,17 @@
   padding-top:    6px;
   padding-bottom: 6px;
 }
-#root {
-  .sidebar-avatar .notification-badge,
-  .notification-badge {
-    &.important {
-      background-color: var(--mod-notification-dot);
-    }
-    background-color: transparent;
-    box-shadow: 0 0 0 2px var(--mod-activity-ring);
-    transform: scale(1.2);
-    .sidebar-avatar--active & {
-      visibility: hidden;
-    }
+.sidebar-avatar .notification-badge,
+.notification-badge {
+  &.important {
+    background-color: var(--mod-notification-dot);
   }
+  background-color: transparent;
+  box-shadow: 0 0 0 2px var(--mod-activity-ring);
+  transform: scale(1.2);
+  .sidebar-avatar--active & {
+    visibility: hidden;
+  }
+}
+
 }
