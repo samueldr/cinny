@@ -1,0 +1,124 @@
+:root {
+  --font-family: Go Mono;
+  --tc-surface-high: #000;
+  --tc-surface-normal: #000;
+  --tc-surface-low: #000;
+  --navigation-sidebar-width: calc(64px - 8px);
+  --av-small: 24px;
+  --bo-radius: 4px;
+  --lh-b1: 1.3;
+  --lh-b2: --lh-b1;
+  --lh-b3: --lh-b1;
+  --lh-h1: --lh-b1;
+  --lh-h2: --lh-b1;
+  --lh-h3: --lh-b1;
+
+  --mod-activity-ring: #8cb5ff;
+  --mod-selected-bg: #8cb5ff;
+  --mod-notification-dot: #73ff70;
+}
+
+.message + .timeline-change,
+.message--content-only + .message--full,
+.message--full + .message--full,
+.timeline-change + .message {
+  margin-top: initial;
+}
+
+.navigation {
+  background: #f5f5f5;
+}
+.rooms-container:before {
+  background: initial;
+}
+.rooms__wrapper > * {
+  padding: 0;
+}
+.room-selector__content {
+  padding: 0;
+}
+.sidebar-avatar--active {
+  background: --mod-selected-bg;
+  box-shadow: 0 0 0 5px --mod-selected-bg;
+  border-radius: 3px;
+}
+.room-selector--selected {
+  background: --mod-selected-bg;
+  .text {
+    color: #000;
+  }
+}
+.room-selector {
+  .avatar-container {
+    border-color: transparent;
+  }
+}
+.avatar-container {
+  border: 1px solid #cfcfcf;
+}
+.message__avatar-container,
+.ph-msg__avatar-container {
+  margin-right: 6px;
+}
+.message,
+.ph-msg {
+  padding-left: 8px;
+  padding-right: 2px;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+.navigation__wrapper {
+  $expanded: 240px;
+  $collapsed: 120px;
+  width: auto;
+  max-width: $collapsed;
+  min-width: $collapsed;
+
+  &:not(:hover) {
+    .room-selector .text,
+    .room-selector__options {
+      display: none;
+    }
+  }
+  // /*
+  &:focus,
+  &:hover {
+    width: auto;
+    max-width: $expanded;
+    min-width: $expanded;
+  }
+  /* */
+}
+.message__content, .message__edit, .message__reactions, .message__reply {
+  max-width: initial;
+}
+.message__reply {
+  border-radius: 6px 0 0 6px;
+  border-left: 0.6rem #8cb5ff solid;
+  background: #f0f6ff;
+  padding-left:   6px;
+  padding-top:    6px;
+  padding-bottom: 6px;
+}
+.room-view__content .timeline-change {
+  margin-bottom: 6px;
+  border-radius: 6px 0 0 6px;
+  border-left: 0.6rem #d3d3d3 solid;
+  background: #f7f7f7;
+  margin-left: 6px;
+  padding-left:   6px;
+  padding-top:    6px;
+  padding-bottom: 6px;
+}
+.sidebar-avatar .notification-badge,
+.notification-badge {
+  &.important {
+    background-color: --mod-notification-dot;
+  }
+  background-color: transparent;
+  box-shadow: 0 0 0 2px --mod-activity-ring;
+  transform: scale(1.2);
+  .sidebar-avatar--active & {
+    visibility: hidden;
+  }
+}
