@@ -31,6 +31,28 @@ import CmdIC from '../../../../public/res/ic/outlined/cmd.svg';
 
 import { getUsersActionJsx } from './common';
 
+// XXX: make a `modUtils` catchall tool
+// https://matrix.org/docs/spec/client_server/latest#m-room-message-msgtypes
+const sendMessage = (roomId, message) => {
+  const mx = initMatrix.matrixClient;
+  let content = {
+    body: message,
+    msgtype: 'm.text',
+  };
+
+  mx.sendMessage(roomId, content);
+};
+
+const sendEmote = (roomId, message) => {
+  const mx = initMatrix.matrixClient;
+  let content = {
+    body: message,
+    msgtype: 'm.emote',
+  };
+
+  mx.sendMessage(roomId, content);
+};
+
 const commands = [{
   name: 'markdown',
   description: 'Toggle markdown for messages.',
@@ -58,6 +80,10 @@ const commands = [{
   isOptions: true,
   description: 'Invite user to room. Example: /invite/@johndoe:matrix.org',
   exe: (roomId, searchTerm) => openInviteUser(roomId, searchTerm),
+}, {
+  name: 'shrug',
+  description: '¯\\_(ツ)_/¯',
+  exe: (roomId) => sendEmote(roomId, '¯\\_(ツ)_/¯'),
 }];
 
 function CmdHelp() {
