@@ -1,0 +1,99 @@
+//
+// Collapsible Sidebar
+// ===================
+//
+// This is used to provide the sidebar that expands/collapses on hover.
+//
+:root {
+  --mod-compact-sidebar-min-width: calc(
+    var(--av-extra-small) +
+    2 * var(--sp-tight) +
+    var(--navigation-sidebar-width)
+  );
+  --mod-compact-sidebar-max-width: calc(160px + var(--mod-compact-sidebar-min-width));
+}
+
+// Force specificty with `#root`
+#root {
+
+.navigation__wrapper:not(:hover) {
+  .rooms__wrapper {
+    .webkit-scrollbar::-webkit-scrollbar, .scrollbar::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+  }
+  .room-selector {
+    position: relative;
+
+    &::before {
+      content: "";
+      display:block;
+      position: absolute;
+      background: transparent;
+      top: 0;
+      bottom: 0;
+      left:  calc( -1 * var(--sp-extra-tight) );
+      right: 0;
+      border-radius: var(--bo-radius);
+      border: 1px solid transparent;
+    }
+  }
+  .room-selector--selected {
+    background-color: transparent;
+    border-color: transparent;
+    &::before {
+      background: var(--bg-surface);
+      border-color: var(--bg-surface-border);
+    }
+  }
+}
+
+.navigation__wrapper:not(:hover) {
+  .header {
+    width: 0;
+    overflow: hidden;
+  }
+
+  .room-selector__content > .text,
+  .room-selector__options {
+    display: none;
+  }
+
+  .room-selector {
+    position: relative;
+    .notification-badge {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: calc(var(--av-extra-small) - 6px);
+    }
+  }
+}
+
+.navigation__wrapper {
+  .rooms-container .avatar-container {
+    img, .avatar__border {
+      width: var(--av-extra-small);
+      height: var(--av-extra-small);
+    }
+  }
+}
+
+// Makes sidebar expand on hover
+.navigation__wrapper {
+  width: auto;
+  max-width: var(--mod-compact-sidebar-min-width);
+  min-width: var(--mod-compact-sidebar-min-width);
+
+  &:focus,
+  &:hover {
+    width: auto;
+    max-width: var(--mod-compact-sidebar-max-width);
+    min-width: var(--mod-compact-sidebar-max-width);
+    margin-right: calc( -1 * ( var(--mod-compact-sidebar-max-width) - var(--mod-compact-sidebar-min-width) ) );
+    z-index: 10;
+  }
+}
+
+}
