@@ -1,0 +1,64 @@
+//
+// Compact
+// =======
+//
+// Customized rules made to enhance information density.
+//
+// Some things are made smaller, **mainly** spacing.
+//
+
+:root {
+  --sp-ultra-tight: 4px;
+  --sp-extra-tight: 6px;
+  --sp-tight: 8px;
+  --sp-normal: 12px;
+  --sp-loose: 16px;
+  --sp-extra-loose: 24px;
+
+  --bo-radius: 4px;
+
+  --av-large:  80px;
+  --av-normal: 42px;
+  --av-small:  24px;
+  --av-extra-small: 24px;
+
+  --lh-b1: 1.3;
+  --lh-b2: --lh-b1;
+  --lh-b3: --lh-b1;
+  --lh-h1: --lh-b1;
+  --lh-h2: --lh-b1;
+  --lh-h3: --lh-b1;
+}
+
+#root {
+
+.message + .timeline-change,
+.message--content-only + .message--full,
+.message--full + .message--full,
+.timeline-change + .message {
+  margin-top: initial;
+}
+.rooms__wrapper > * {
+  padding: 0;
+}
+.room-selector__content {
+  padding: 0;
+}
+.message__avatar-container,
+.ph-msg__avatar-container {
+  margin-right: var(--sp-extra-tight);
+}
+.message,
+.ph-msg {
+  padding-left: var(--sp-tight);
+  padding-right: var(--sp-ultra-tight);
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+// Ensures message can fill *all* the available width.
+.message__content, .message__edit, .message__reactions, .message__reply {
+  max-width: initial;
+}
+
+}
