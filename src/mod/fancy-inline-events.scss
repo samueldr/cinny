@@ -1,0 +1,28 @@
+:root {
+}
+
+#root {
+
+.message__reply {
+  border-radius: var(--bo-radius) 0 0 var(--bo-radius);
+  border-left: calc(var(--bo-radius) * 1.6) var(--bg-primary) solid;
+  background: var(--bg-primary-border);
+
+  padding-left:   var(--sp-extra-tight);
+  padding-top:    var(--sp-extra-tight);
+  padding-bottom: var(--sp-extra-tight);
+}
+
+.room-view__content .timeline-change {
+  border-radius: var(--bo-radius) 0 0 var(--bo-radius);
+  border-left: calc(var(--bo-radius) * 1.6) var(--bg-surface-border) solid;
+  background: var(--bg-surface-low);
+
+  margin-bottom:  var(--sp-extra-tight);
+  margin-left:    var(--sp-extra-tight);
+  padding-left:   var(--sp-extra-tight);
+  padding-top:    var(--sp-extra-tight);
+  padding-bottom: var(--sp-extra-tight);
+}
+
+}
