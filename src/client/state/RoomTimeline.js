@@ -101,9 +101,6 @@ class RoomTimeline extends EventEmitter {
     this.matrixClient.on('RoomMember.typing', this._listenTypingEvent);
     this.matrixClient.on('Room.receipt', this._listenReciptEvent);
 
-    // TODO: remove below line when release
-    window.selectedRoom = this;
-
     if (this.isEncryptedRoom()) this.room.decryptAllEvents();
     this._populateTimelines();
   }

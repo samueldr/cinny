@@ -56,8 +56,6 @@ class InitMatrix extends EventEmitter {
       PREPARED: (prevState) => {
         console.log('PREPARED state');
         console.log('previous state: ', prevState);
-        // TODO: remove global.initMatrix at end
-        global.initMatrix = this;
         if (prevState === null) {
           this.roomList = new RoomList(this.matrixClient);
           this.roomsInput = new RoomsInput(this.matrixClient);

@@ -13,9 +13,6 @@ class Notifications extends EventEmitter {
 
     this._initNoti();
     this._listenEvents();
-
-    // TODO:
-    window.notifications = this;
   }
 
   _initNoti() {
