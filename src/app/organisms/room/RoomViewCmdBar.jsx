@@ -381,7 +381,7 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
     deactivateCmd();
   }
   function executeCmd() {
-    if (cmd.suggestions.length === 0) return;
+    if (!cmd.suggestions || cmd.suggestions.length === 0) return;
     fireCmd({
       prefix: cmd.prefix,
       option: cmd.option,
