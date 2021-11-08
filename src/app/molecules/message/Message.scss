@@ -268,21 +268,26 @@
 .message__content {
   & h1,
   & h2 {
-    color: var(--tc-surface-high);
     margin: var(--sp-extra-loose) 0 var(--sp-normal);
     line-height: var(--lh-h1);
   }
   & h3,
   & h4 {
-    color: var(--tc-surface-high);
     margin: var(--sp-loose) 0 var(--sp-tight);
     line-height: var(--lh-h2);
   }
   & h5,
   & h6 {
-    color: var(--tc-surface-high);
     margin: var(--sp-normal) 0 var(--sp-extra-tight);
     line-height: var(--lh-s1);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--tc-surface-high);
+  }
+  [data-mx-color] {
+    h1, h2, h3, h4, h5, h6 {
+      color: inherit;
+    }
   }
   & hr {
     border-color: var(--bg-surface-border);
