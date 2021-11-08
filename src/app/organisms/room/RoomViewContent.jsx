@@ -374,10 +374,11 @@ function RoomViewContent({
 
     let content = mEvent.getContent().body;
     if (typeof content === 'undefined') return null;
+    let formattedContent = mEvent.getContent().formatted_body;
     const msgType = mEvent.getContent()?.msgtype;
     let reply = null;
     let reactions = null;
-    let isMarkdown = mEvent.getContent().format === 'org.matrix.custom.html';
+    let isCustomHTML = mEvent.getContent().format === 'org.matrix.custom.html';
     const isReply = typeof mEvent.getWireContent()['m.relates_to']?.['m.in_reply_to'] !== 'undefined';
     const isEdited = roomTimeline.editedTimeline.has(mEvent.getId());
     const haveReactions = roomTimeline.reactionTimeline.has(mEvent.getId());
@@ -403,8 +404,9 @@ function RoomViewContent({
       if (typeof latestEdited.getContent()['m.new_content'] === 'undefined') return null;
       const latestEditBody = latestEdited.getContent()['m.new_content'].body;
       const parsedEditedContent = parseReply(latestEditBody);
-      isMarkdown = latestEdited.getContent()['m.new_content'].format === 'org.matrix.custom.html';
+      isCustomHTML = latestEdited.getContent()['m.new_content'].format === 'org.matrix.custom.html';
       if (parsedEditedContent === null) {
+        formattedContent = latestEdited.getContent()['m.new_content'].formatted_body;
         content = latestEditBody;
       } else {
         content = parsedEditedContent.content;
@@ -454,8 +456,9 @@ function RoomViewContent({
     const userContent = (
       <MessageContent
         senderName={getUsernameOfRoomMember(mEvent.sender)}
-        isMarkdown={isMarkdown}
+        isCustomHTML={isCustomHTML}
         content={isMedia(mEvent) ? genMediaContent(mEvent) : content}
+        formattedContent={isMedia(mEvent) ? null : formattedContent}
         msgType={msgType}
         isEdited={isEdited}
       />

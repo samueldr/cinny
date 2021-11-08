@@ -156,15 +156,16 @@
 .message__content {
   word-break: break-word;
   
-  & > .text > * {
-    white-space: pre-wrap;
-  }
-
   & a {
     word-break: break-word;
   }
   &-edited {
     color: var(--tc-surface-low);
+  }
+}
+.message__content--format-text {
+  & > .text > * {
+    white-space: pre-wrap;
   }
 }
 .message__edit {

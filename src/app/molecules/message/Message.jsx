@@ -2,12 +2,14 @@ import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import './Message.scss';
 
+import initMatrix from '../../../client/initMatrix';
 import Linkify from 'linkify-react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { coy } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import parse from 'html-react-parser';
+import sanitizeHtml from 'sanitize-html';
 import { getUsername } from '../../../util/matrixUtil';
 
 import Text from '../../atoms/text/Text';
@@ -42,8 +44,150 @@ const components = {
 function linkifyContent(content) {
   return <Linkify options={{ target: { url: '_blank' } }}>{content}</Linkify>;
 }
-function genMarkdown(content) {
-  return <ReactMarkdown remarkPlugins={[gfm]} components={components} linkTarget="_blank">{content}</ReactMarkdown>;
+
+function sanitizeColorizedTag(tagName, attributes) {
+  const attribs = { ...attributes };
+  const styles = [];
+  if (attributes["data-mx-color"]) {
+    styles.push(`color: ${attributes["data-mx-color"]};`);
+  }
+  if (attributes["data-mx-bg-color"]) {
+    styles.push(`background-color: ${attributes["data-mx-bg-color"]};`);
+  }
+  attribs.style = styles.join(" ");
+
+  return {
+    tagName,
+    attribs
+  };
+}
+
+function sanitizeLinkTag(tagName, attribs) {
+  return {
+    tagName,
+    attribs: {
+      ...attribs,
+      'target': '_blank',
+      'rel': 'noreferrer noopener',
+    },
+  };
+}
+
+function sanitizeCodeTag(tagName, attributes) {
+  const attribs = { ...attributes };
+  let classes = [];
+  if (attributes["class"]) {
+    classes = attributes["class"].split(/\s+/).filter((className) => className.match(/^language-(\w+)/));
+  }
+
+  return {
+    tagName,
+    attribs: {
+      ...attribs,
+      'class': classes.join(" "),
+    },
+  };
+}
+
+function sanitizeImgTag(tagName, attributes) {
+  const mx = initMatrix.matrixClient;
+  const { src } = attributes;
+  const attribs = { ...attributes };
+  delete attribs["src"]
+
+  if (src.match(/^mxc:\/\//)) {
+    attribs["src"] = mx.mxcUrlToHttp(src);
+  }
+
+  return {
+    tagName,
+    attribs,
+  };
+}
+
+function fromHTML(str) {
+  // See: https://spec.matrix.org/unstable/client-server-api/#mroommessage-msgtypes
+  const sanitized = sanitizeHtml(str, {
+    allowedTags: [
+      'font',
+      'del',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'blockquote',
+      'p',
+      'a',
+      'ul',
+      'ol',
+      'sup',
+      'sub',
+      'li',
+      'b',
+      'i',
+      'u',
+      'strong',
+      'em',
+      'strike',
+      'code',
+      'hr',
+      'br',
+      'div',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+      'th',
+      'td',
+      'caption',
+      'pre',
+      'span',
+      'img',
+      'details',
+      'summary',
+    ],
+    allowedClasses: {},
+    allowedAttributes: {
+      'ol': ['start'],
+      'img': ['width', 'height', 'alt', 'title', 'src'],
+      'a': ['name', 'target', 'href', 'rel'],
+      'code': ['class'],
+      'font': ['data-mx-bg-color', 'data-mx-color', 'color', /* sanitized for data-mx-* */, 'style'],
+      'span': ['data-mx-bg-color', 'data-mx-color', 'data-mx-spoiler', /* sanitized for data-mx-* */, 'style'],
+    },
+    allowProtocolRelative: false,
+    allowedSchemesByTag: {
+      // href (provided the value is not relative and has a scheme matching one of: https, http, ftp, mailto, magnet)
+      a: [ 'https', 'http', 'ftp', 'mailto', 'magnet' ],
+      // src will be sanitized from mxc://
+      img: [ 'https', 'http' ],
+    },
+    // Allowed only when allowed in attributes.
+    // Note that we should **always** use `sanitizeColorizedTag` on tags with styles enabled.
+    allowedStyles: {
+      '*': {
+        'color': [/^#(0x)?[0-9a-f]+$/i],
+        'background-color': [/^#(0x)?[0-9a-f]+$/i],
+      },
+    },
+    nestingLimit: 100,
+    nonTextTags: [
+      'style', 'script', 'textarea', 'option',
+      // We re-define `nonTextTags` as a cheaty way to discard `<mx-reply>`.
+      'mx-reply',
+    ],
+    transformTags: {
+      'a': sanitizeLinkTag,
+      'img': sanitizeImgTag,
+      'code': sanitizeCodeTag,
+      'font': sanitizeColorizedTag,
+      'span': sanitizeColorizedTag,
+    },
+  });
+
+  return linkifyContent(parse(sanitized));
 }
 
 function PlaceholderMessage() {
@@ -108,28 +252,33 @@ MessageReply.propTypes = {
 function MessageContent({
   senderName,
   content,
-  isMarkdown,
+  formattedContent,
+  isCustomHTML,
   isEdited,
   msgType,
 }) {
   return (
-    <div className="message__content">
+    <div className={[
+      "message__content",
+      `message__content--format-${isCustomHTML ? "html" : "text"}`,
+    ].join(" ")}>
       <div className="text text-b1">
         { msgType === 'm.emote' && `* ${senderName} ` }
-        { isMarkdown ? genMarkdown(content) : linkifyContent(content) }
+        { isCustomHTML ? fromHTML(formattedContent) : <p>{linkifyContent(content)}</p> }
       </div>
       { isEdited && <Text className="message__content-edited" variant="b3">(edited)</Text>}
     </div>
   );
 }
 MessageContent.defaultProps = {
-  isMarkdown: false,
+  isCustomHTML: false,
   isEdited: false,
 };
 MessageContent.propTypes = {
   senderName: PropTypes.string.isRequired,
   content: PropTypes.node.isRequired,
-  isMarkdown: PropTypes.bool,
+  formattedContent: PropTypes.node,
+  isCustomHTML: PropTypes.bool,
   isEdited: PropTypes.bool,
   msgType: PropTypes.string.isRequired,
 };
