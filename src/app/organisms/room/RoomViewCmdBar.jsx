@@ -7,14 +7,10 @@ import twemoji from 'twemoji';
 
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
-import { toggleMarkdown } from '../../../client/action/settings';
-import * as roomActions from '../../../client/action/room';
+import CINNY_COMMANDS from '../../../client/commands';
 import {
   selectTab,
   selectRoom,
-  openCreateRoom,
-  openPublicRooms,
-  openInviteUser,
   openReadReceipts,
 } from '../../../client/action/navigation';
 import { emojis } from '../emoji-board/emoji';
@@ -31,35 +27,6 @@ import TimelineChange from '../../molecules/message/TimelineChange';
 import CmdIC from '../../../../public/res/ic/outlined/cmd.svg';
 
 import { getUsersActionJsx } from './common';
-
-const commands = [{
-  name: 'markdown',
-  description: 'Toggle markdown for messages.',
-  exe: () => toggleMarkdown(),
-}, {
-  name: 'startDM',
-  isOptions: true,
-  description: 'Start direct message with user. Example: /startDM/@johndoe.matrix.org',
-  exe: (roomId, searchTerm) => openInviteUser(undefined, searchTerm),
-}, {
-  name: 'createRoom',
-  description: 'Create new room',
-  exe: () => openCreateRoom(),
-}, {
-  name: 'join',
-  isOptions: true,
-  description: 'Join room with alias. Example: /join/#cinny:matrix.org',
-  exe: (roomId, searchTerm) => openPublicRooms(searchTerm),
-}, {
-  name: 'leave',
-  description: 'Leave current room',
-  exe: (roomId) => roomActions.leave(roomId),
-}, {
-  name: 'invite',
-  isOptions: true,
-  description: 'Invite user to room. Example: /invite/@johndoe:matrix.org',
-  exe: (roomId, searchTerm) => openInviteUser(roomId, searchTerm),
-}];
 
 function CmdHelp() {
   return (
@@ -92,7 +59,7 @@ function CmdHelp() {
 
 function ViewCmd() {
   function renderAllCmds() {
-    return commands.map((command) => (
+    return CINNY_COMMANDS.map((command) => (
       <SettingTile
         key={command.name}
         title={command.name}
@@ -341,7 +308,7 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
       });
     }
     const setupSearch = {
-      '/': () => asyncSearch.setup(commands, { keys: ['name'], isContain: true, suggestAllOnEmpty: true }),
+      '/': () => asyncSearch.setup(CINNY_COMMANDS, { keys: ['name'], isContain: true, suggestAllOnEmpty: true }),
       '>*': () => asyncSearch.setup(getRooms([...roomList.spaces]), { keys: ['name'], limit: 20 }),
       '>#': () => asyncSearch.setup(getRooms([...roomList.rooms]), { keys: ['name'], limit: 20 }),
       '>@': () => asyncSearch.setup(getRooms([...roomList.directs]), { keys: ['name'], limit: 20 }),
