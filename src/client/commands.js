@@ -1,3 +1,4 @@
+import initMatrix from './initMatrix';
 import { toggleMarkdown } from './action/settings';
 import {
   openCreateRoom,
@@ -33,6 +34,33 @@ const CINNY_COMMANDS = [{
   isOptions: true,
   description: 'Invite user to room. Example: /invite/@johndoe:matrix.org',
   exe: (roomId, searchTerm) => openInviteUser(roomId, searchTerm),
+}, {
+  name: 'shrug',
+  description: '¯\\_(ツ)_/¯',
+  exe: (roomId, arg) => {
+    const txt = ['¯\\_(ツ)_/¯'];
+    if (arg) { txt.push(arg); }
+
+    const content = {
+      body: txt.join(" "),
+      msgtype: 'm.text',
+    };
+
+    initMatrix.matrixClient.sendMessage(roomId, content);
+  },
+}, {
+  name: 'me',
+  description: 'Send text as an action (emote)',
+  exe: (roomId, text) => {
+    if (text) {
+      const content = {
+        body: text,
+        msgtype: 'm.emote',
+      };
+
+      initMatrix.matrixClient.sendMessage(roomId, content);
+    }
+  },
 }];
 
 export default CINNY_COMMANDS;
