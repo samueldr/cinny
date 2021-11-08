@@ -8,6 +8,7 @@ import TextareaAutosize from 'react-autosize-textarea';
 import initMatrix from '../../../client/initMatrix';
 import cons from '../../../client/state/cons';
 import settings from '../../../client/state/settings';
+import CINNY_COMMANDS from '../../../client/commands';
 import { openEmojiBoard } from '../../../client/action/navigation';
 import { bytesToSize, getEventCords } from '../../../util/common';
 import { getUsername } from '../../../util/matrixUtil';
@@ -125,6 +126,22 @@ function RoomViewInput({
       inputBaseRef.current.style.boxShadow = '0 0 0 1px var(--bg-danger)';
     });
   }
+  function handleCommand(msgBody) {
+    const cmd = msgBody.replace(/[\s\n]+(\n|.)+$/, "").replace(/^\//, "");
+    const text = msgBody.substring(cmd.length+1).replace(/^[\s\n]*/m, "");
+    const cmd_info = CINNY_COMMANDS.find((info) => info.name === cmd);
+
+    if (cmd_info) {
+      textAreaRef.current.value = "";
+      cmd_info.exe(roomId, text);
+    }
+    else {
+      // TODO: handle non-existant commands
+      console.warn("TODO: handle non-existant commands");
+      console.log(`This command: '${cmd}', with the following args:`);
+      console.log(text);
+    }
+  }
   function setCursorPosition(pos) {
     setTimeout(() => {
       textAreaRef.current.focus();
@@ -141,9 +158,17 @@ function RoomViewInput({
   }
   function firedCmd(cmdData) {
     const msg = textAreaRef.current.value;
-    textAreaRef.current.value = replaceCmdWith(
-      msg, cmdCursorPos, typeof cmdData?.replace !== 'undefined' ? cmdData.replace : '',
-    );
+
+    // Directly send a command that fully matches the completed command.
+    // e.g. writing `/shrug` and send should directly send the shrug command.
+    if (msg.match(/^\//) && msg === `/${cmdData?.result?.name}`) {
+      handleCommand(msg);
+    }
+    else {
+      textAreaRef.current.value = replaceCmdWith(
+        msg, cmdCursorPos, typeof cmdData?.replace !== 'undefined' ? cmdData.replace : '',
+      );
+    }
     deactivateCmd();
   }
 
@@ -197,6 +222,11 @@ function RoomViewInput({
     if (roomsInput.isSending(roomId)) return;
     if (msgBody.trim() === '' && attachment === null) return;
     sendIsTyping(false);
+
+    if (msgBody.match(/^\//)) {
+      handleCommand(msgBody);
+      return;
+    }
 
     roomsInput.setMessage(roomId, msgBody);
     if (attachment !== null) {

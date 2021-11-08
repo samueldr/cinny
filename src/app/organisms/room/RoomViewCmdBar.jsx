@@ -333,6 +333,7 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
     }
     if (myCmd.prefix === '/') {
       viewEvent.emit('cmd_fired', {
+        result: myCmd.result,
         replace: `/${myCmd.result.name} `,
       });
     }
