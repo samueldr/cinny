@@ -349,13 +349,26 @@ function RoomViewCmdBar({ roomId, roomTimeline, viewEvent }) {
     }
     if (myCmd.prefix === '@') {
       viewEvent.emit('cmd_fired', {
-        replace: `@${myCmd.result.name} `,
-        leadingReplacement: `@${myCmd.result.name}: `,
+        // FIXME: https://spec.matrix.org/unstable/client-server-api/#user-room-and-group-mentions
+        // When sending with a `formatted_body`, the user mention should be an <a> element with a matrix.to link.
+        // `/html <a href="https://matrix.to/#/@samueldr:matrix.org">[actually not used when rendering the actual pill... should be the current username]</a>`
+        // XXX: if not markdown message
+        // replace: `@${myCmd.result.name} `,
+        // leadingReplacement: `@${myCmd.result.name}: `,
+        // XXX: if markdown message
+        replace: `[${myCmd.result.name}](https://matrix.to/#/@${myCmd.result.userId}) `,
+        leadingReplacement: `[${myCmd.result.name}](https://matrix.to/#/@${myCmd.result.userId}): `,
       });
     }
     if (myCmd.prefix === '#') {
+      // FIXME: https://spec.matrix.org/unstable/client-server-api/#user-room-and-group-mentions
+      // When sending with a `formatted_body`, the user mention should be an <a> element with a matrix.to link.
+      // `/html <a href="https://matrix.to/#/#nixos-on-arm:nixos.org">[actually not used when rendering the actual pill...]</a>`
       viewEvent.emit('cmd_fired', {
-        replace: myCmd.result.alias,
+        // XXX: if not markdown message
+        // replace: myCmd.result.alias,
+        // XXX: if markdown message
+        replace: `[${myCmd.result.alias}](https://matrix.to/#/${myCmd.result.roomId}) `,
       });
     }
     deactivateCmd();
