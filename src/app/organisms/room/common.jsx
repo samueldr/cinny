@@ -85,7 +85,7 @@ function getTimelineJSXMessages() {
       return (
         <>
           <b>{user}</b>
-          {' set the avatar'}
+          {' set their avatar'}
         </>
       );
     },
@@ -93,7 +93,7 @@ function getTimelineJSXMessages() {
       return (
         <>
           <b>{user}</b>
-          {' changed the avatar'}
+          {' changed their avatar'}
         </>
       );
     },
@@ -101,7 +101,7 @@ function getTimelineJSXMessages() {
       return (
         <>
           <b>{user}</b>
-          {' removed the avatar'}
+          {' removed their avatar'}
         </>
       );
     },
@@ -109,7 +109,7 @@ function getTimelineJSXMessages() {
       return (
         <>
           <b>{user}</b>
-          {' set the display name to '}
+          {' set their display name to '}
           <b>{newName}</b>
         </>
       );
@@ -118,7 +118,7 @@ function getTimelineJSXMessages() {
       return (
         <>
           <b>{user}</b>
-          {' changed the display name to '}
+          {' changed their display name to '}
           <b>{newName}</b>
         </>
       );
@@ -127,7 +127,7 @@ function getTimelineJSXMessages() {
       return (
         <>
           <b>{user}</b>
-          {' removed the display name '}
+          {' removed their display name '}
           <b>{lastName}</b>
         </>
       );
